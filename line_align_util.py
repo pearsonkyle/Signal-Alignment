@@ -17,7 +17,6 @@ def align_spectra(reference, target, ROI, order=1,init=0.1,res=1,b=1):
         is given in native pixel coordinates not the high res coordinates
 
         b - symmetric bounds for constraining the shift search around the initial guess
-          -
     '''
     ROI[0] = int(ROI[0]*res)
     ROI[1] = int(ROI[1]*res)
@@ -39,10 +38,6 @@ def align_spectra(reference, target, ROI, order=1,init=0.1,res=1,b=1):
     maxb = max( [(init-b)*res,(init+b)*res] )
     result = minimize(fcn2min,init,method='L-BFGS-B',bounds=[ (minb,maxb) ])
     return result.x[0]/res
-
-# add a nested sampler
-# try alignment with just |chi| (doesn't seem to make much difference)
-
 
 
 def phase_spectra(ref,tar,ROI,res=100):
@@ -67,6 +62,7 @@ def phase_spectra(ref,tar,ROI,res=100):
     s1 = np.argmax(cc)*mod*(1./res)
     return s1
 
+    # older method that behaves the same just uses more lines of code
     x,r1 = highres(ref[ROI[0]:ROI[1]],kind='linear',res=res)
     x,r2 = highres(tar[ROI[0]:ROI[1]],kind='linear',res=res)
 
@@ -81,11 +77,6 @@ def phase_spectra(ref,tar,ROI,res=100):
     shifts = np.linspace(-0.5*l,0.5*l,l*res)
 
     return shifts[np.argmax(cc.real)]
-
-    # applying filter removes spectral info at the edge of bin
-    #f1 = np.fft.fft(r1)
-    #f1[20:-20] = 0
-    #df = np.fft.ifft(f1)
 
 
 def highres(y,kind='cubic',res=100):
@@ -107,50 +98,6 @@ def error(x,y):
 
     er = np.sqrt( dfdx**2 * sigx**2 + dfdy**2 * sigy**2 )
     return er
-
-
-def fit_psf(flux, ci=0, npts=10, debug=False):
-    # ci is the initial guess to gaussian center 
-
-    # pull out flux region around spectral line
-    Y = flux[int(np.sign(ci)*ci-0.5*npts):int(np.sign(ci)*ci+0.5*npts)]
-    X = np.arange(int(np.sign(ci)*ci-0.5*npts),int(np.sign(ci)*ci+0.5*npts))
-
-    # just find the lowest point in the spectrum and center around there
-    if ci > 0: # fit trough
-        cp = np.argmin(Y)
-        ci = X[cp]
-    else: # fit peak
-        cp = np.argmax(Y)
-        ci = X[cp]
-
-    # pull out flux region around spectral line
-    Y = flux[int(ci-0.5*npts):int(ci+0.5*npts)]
-    X = np.arange(int(ci-0.5*npts),int(ci+0.5*npts))
-
-
-    # assume all spectral lines have negative amplitude
-    ai = np.min(Y) - np.max(Y)
-    bi = np.max(Y)
-
-    line = lambda x,m,b : m*x + b
-    def star_psf(x,a,x0,sigx,m,b):
-        gaus = a * np.exp(-(x-x0)**2 / (2*sigx**2) )
-        gaus += line(x,m,b)
-        return gaus
-
-    def fcn2min(p):
-        return np.sum(  (Y - star_psf(X,*p))**2 )
-
-    #return X[np.argmin(Y)
-
-    init = [ai,ci,2*(npts/10.),0,bi]
-    result = minimize(fcn2min,init,method='Nelder-Mead')
-
-    if debug:
-        import pdb; pdb.set_trace()
-
-    return result.x[1]
 
 
 
