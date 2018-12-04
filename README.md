@@ -3,7 +3,7 @@ Algorithms to align 1D signals by deriving the offset using different cross-corr
 
 
 ## Alignment via chi-squared minimization
-The first alignment technique is labeled "align_spectra". This function shifts a signal by resampling it via linear interpolation, the edges of the signal are ignored because the algorithm focuses on aligning two signals within a region of interest. The shifted signal is then compared to a "template" signal where a chi-squared minimization occurs to derive the optimal offset between the two. Each signal (template and shifted) is normalized (mean=1) prior to shifting so that the algorithm focuses mainly on comparing the shape of the data. 
+The first alignment technique is labeled "align_spectra". This function shifts a signal by resampling it via linear interpolation, the edges of the signal are ignored because the algorithm focuses on aligning two signals within a region of interest. The shifted signal is then compared to a "template" signal where a chi-squared minimization occurs to derive the optimal offset between the two. Each signal (template and shifted) is normalized (mean=1) prior to shifting so that the algorithm focuses mainly on comparing the shape of the data. One caveat about this techqnique, it is prone to finding local minimum unless priors are heavily constrained since it uses a gradient-based optimization method. 
 
 
 ## Alignment via Fourier space
