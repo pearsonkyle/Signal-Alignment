@@ -13,34 +13,66 @@ The second alignment routine is called "phase_spectra" and uses a phase correlat
 Here is an image of the alignment algorithm in use for real data. I was interested in comparing the shift between two signals that happen to be astrophysical spectra at two different wavelength regions. 
 
 ## Example
-Using each algorithm is fairly straight forward, pass each function two 1D arrays as well as bounds 
 ``` python
+import numpy as np
+from scipy import signal
+from scipy.ndimage import shift
+import matplotlib.pyplot as plt
+
+from signal_alignment import phase_align, chisqr_align
+
+if __name__ == "__main__":
+
     NPTS = 100
     SHIFTVAL = 4
-    NOISE = 1e-3
+    NOISE = 1e-2 # can perturb offset retrieval from true
+    print('true signal offset:',SHIFTVAL)
 
     # generate some noisy data and simulate a shift
-    x = np.linspace(0,4*np.pi,NPTS)
-    y = signal.gaussian(NPTS, std=4) * np.random.normal(1,NOISE,NPTS)
-    shifted = np.roll( signal.gaussian(NPTS, std=4) ,SHIFTVAL) * np.random.normal(1,NOISE,NPTS)
-    # np roll can only do integer shifts
+    og = signal.gaussian(NPTS, std=4) + np.random.normal(1,NOISE,NPTS)
+    shifted = shift( signal.gaussian(NPTS, std=4) ,SHIFTVAL) + np.random.normal(1,NOISE,NPTS)
 
     # align the shifted spectrum back to the real
-    s = phase_spectra(y, shifted, [10,190])
+    s = phase_align(og, shifted, [10,90])
     print('phase shift value to align is',s)
 
     # chi squared alignment at native resolution
-    s = align_spectra(y, shifted, [10,190],init=-4,b=1)
+    s = chisqr_align(og, shifted, [10,90], init=-3.5,bound=2)
     print('chi square alignment',s)
 
-    plt.plot(x,y,'k-',label='original data')
-    plt.plot(x,shifted,'r-',label='shifted data')
-    plt.plot(x,shift(shifted,s),'o--',label='aligned data') # use shift function to linearly interp data
+    # make some diagnostic plots
+    plt.plot(og,label='original data')
+    plt.plot(shifted,label='shifted data')
+    plt.plot(shift(shifted,s,mode='nearest'),ls='--',label='aligned data') 
     plt.legend(loc='best')
     plt.show()
 ```
 
 ## Use cases
-* These algorithms are used in [Ground-Based Spectroscopy of XO-2b using a Systematic Wavelength Calibration](https://arxiv.org/abs/1811.02060) to correct for time-dependent wavelength shifts as a result of atmospheric differential refraction. 
+* These algorithms were created for the scientific manuscript: [Ground-Based Spectroscopy of XO-2b using a Systematic Wavelength Calibration](https://arxiv.org/abs/1811.02060) to correct for time-dependent wavelength shifts as a result of atmospheric differential refraction. 
 
 * Additionally, these techniques are used as part of the on-chip guiding system for the [NESSI](https://en.wikipedia.org/wiki/New_Mexico_Exoplanet_Spectroscopic_Survey_Instrument) instrument at Palomar Observatory (See [SPIE proceeding: The New NESSI – Refurbishment of an NIR MOS for characterizing exoplanets using the Hale Telescope](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10702/107023K/The-new-NESSI--refurbishment-of-a-NIR-MOS-for/10.1117/12.2314242.short?SSO=1))
+
+## Citing this repo
+The article this code was created for is currently in production at ApJ. When the article is officially published this citation will be updated.
+
+Here is an example bibtex as of (12/21/2018)
+```
+@ARTICLE{Pearson2018,
+       author = {{Pearson}, Kyle A. and {Griffith}, Caitlin A. and {Zellem}, Robert T.
+        and {Koskinen}, Tommi T. and {Roudier}, Gael M.},
+        title = "{Ground-based Spectroscopy of the Exoplanet XO-2b using a Systematic
+        Wavelength Calibration}",
+      journal = {arXiv e-prints},
+     keywords = {Astrophysics - Earth and Planetary Astrophysics},
+         year = 2018,
+        month = Nov,
+          eid = {arXiv:1811.02060},
+        pages = {arXiv:1811.02060},
+archivePrefix = {arXiv},
+       eprint = {1811.02060},
+ primaryClass = {astro-ph.EP},
+       adsurl = {https://ui.adsabs.harvard.edu/\#abs/2018arXiv181102060P},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+```
