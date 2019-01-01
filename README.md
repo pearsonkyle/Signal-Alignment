@@ -1,5 +1,5 @@
 # Signal-Alignment
-Algorithms to align 1D signals by deriving the offset using different cross-correlation methods. 
+Algorithms to align 1D signals by deriving the offset using different cross correlation methods. 
 
 
 ## Alignment via chi-squared minimization
@@ -53,26 +53,21 @@ if __name__ == "__main__":
 
 * Additionally, these techniques are used as part of the on-chip guiding system for the [NESSI](https://en.wikipedia.org/wiki/New_Mexico_Exoplanet_Spectroscopic_Survey_Instrument) instrument at Palomar Observatory (See [SPIE proceeding: The New NESSI – Refurbishment of an NIR MOS for characterizing exoplanets using the Hale Telescope](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10702/107023K/The-new-NESSI--refurbishment-of-a-NIR-MOS-for/10.1117/12.2314242.short?SSO=1))
 
-## Citing this repo
-The article this code was created for is currently in production at ApJ. When the article is officially published this citation will be updated.
+## Citation 
+If you use any of these algorithms please cite this github repository using the article below
 
-Here is an example bibtex as of (12/21/2018)
+[Pearson K. A., et al., 2019, AJ, 157, 21](http://iopscience.iop.org/article/10.3847/1538-3881/aaf1ae/meta)
+
+Here is an example bibtex
 ```
-@ARTICLE{Pearson2018,
-       author = {{Pearson}, Kyle A. and {Griffith}, Caitlin A. and {Zellem}, Robert T.
-        and {Koskinen}, Tommi T. and {Roudier}, Gael M.},
-        title = "{Ground-based Spectroscopy of the Exoplanet XO-2b using a Systematic
-        Wavelength Calibration}",
-      journal = {arXiv e-prints},
-     keywords = {Astrophysics - Earth and Planetary Astrophysics},
-         year = 2018,
-        month = Nov,
-          eid = {arXiv:1811.02060},
-        pages = {arXiv:1811.02060},
-archivePrefix = {arXiv},
-       eprint = {1811.02060},
- primaryClass = {astro-ph.EP},
-       adsurl = {https://ui.adsabs.harvard.edu/\#abs/2018arXiv181102060P},
-      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+@article{Pearson2019,
+  author={Kyle A. Pearson and Caitlin A. Griffith and Robert T. Zellem and Tommi T. Koskinen and Gael M. Roudier},
+  title={Ground-based Spectroscopy of the Exoplanet XO-2b Using a Systematic Wavelength Calibration},
+  journal={The Astronomical Journal},
+  volume={157},
+  number={1},
+  pages={21},
+  url={http://stacks.iop.org/1538-3881/157/i=1/a=21},
+  year={2019}
 }
 ```
