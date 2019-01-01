@@ -1,5 +1,5 @@
 # Signal-Alignment
-Algorithms to align 1D signals by deriving the offset using different cross correlation methods. 
+Algorithms to align 1D signals by deriving the offset using different cross-correlation methods. 
 
 
 ## Alignment via chi-squared minimization
