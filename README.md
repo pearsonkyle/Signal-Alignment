@@ -54,7 +54,7 @@ if __name__ == "__main__":
 * Additionally, these techniques are used as part of the on-chip guiding system for the [NESSI](https://en.wikipedia.org/wiki/New_Mexico_Exoplanet_Spectroscopic_Survey_Instrument) instrument at Palomar Observatory (See [SPIE proceeding: The New NESSI – Refurbishment of an NIR MOS for characterizing exoplanets using the Hale Telescope](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10702/107023K/The-new-NESSI--refurbishment-of-a-NIR-MOS-for/10.1117/12.2314242.short?SSO=1))
 
 ## Citation 
-If you use any of these algorithms please cite this github repository using the article below
+If you use these algorithms please cite the article below
 
 [Pearson K. A., et al., 2019, AJ, 157, 21](http://iopscience.iop.org/article/10.3847/1538-3881/aaf1ae/meta)
 
