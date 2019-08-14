@@ -5,7 +5,29 @@ from scipy.interpolate import interp1d
 from scipy.ndimage.interpolation import shift
 from statsmodels.tsa.stattools import ccovf
 
-def chisqr_align(reference, target, roi, order=1, init=0.1, bound=1):
+def equalize_array_size(array1,array2):
+    '''
+    reduce the size of one sample to make them equal size. 
+    The sides of the biggest signal are truncated
+
+    Args:
+        array1 (1d array/list): signal for example the reference
+        array2 (1d array/list): signal for example the target
+
+    Returns:
+        array1 (1d array/list): middle of the signal if truncated
+        array2 (1d array/list): middle of the initial signal if there is a size difference between the array 1 and 2
+        dif_length (int): size diffence between the two original arrays 
+    '''
+    len1, len2 = len(array1), len(array2)
+    dif_length = len1-len2
+    if dif_length<0:
+        array2 = array2[int(np.floor(-dif_length/2)):len2-int(np.ceil(-dif_length/2))]
+    elif dif_length>0:
+        array1 = array1[int(np.floor(dif_length/2)):len1-int(np.ceil(dif_length/2))]
+    return array1,array2, dif_length
+
+def chisqr_align(reference, target, roi=None, order=1, init=0.1, bound=1):
     '''
     Align a target signal to a reference signal within a region of interest (ROI)
     by minimizing the chi-squared between the two signals. Depending on the shape
@@ -29,6 +51,9 @@ def chisqr_align(reference, target, roi, order=1, init=0.1, bound=1):
         * include loss function on chi-sqr
 
     '''
+    reference, target, dif_length = equalize_array_size(reference,target)
+    if roi==None: roi = [0,len(reference)-1] 
+  
     # convert to int to avoid indexing issues
     ROI = slice(int(roi[0]), int(roi[1]), 1)
 
@@ -48,7 +73,7 @@ def chisqr_align(reference, target, roi, order=1, init=0.1, bound=1):
     # minimize chi-squared between the two signals 
     result = minimize(fcn2min,init,method='L-BFGS-B',bounds=[ (minb,maxb) ])
 
-    return result.x[0]
+    return result.x[0] + int(np.floor(dif_length/2))
 
 
 def phase_align(reference, target, roi, res=100):
